@@ -40,7 +40,7 @@ This repository contains Bash scripts to monitor Linux system metrics (like CPU 
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/<your-username>/linux-system-monitor-telegram.git
+   git clone https://github.com/syntaxsurge/linux-system-monitor-telegram.git
    cd linux-system-monitor-telegram
    ```
 
