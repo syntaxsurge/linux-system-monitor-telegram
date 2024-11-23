@@ -22,6 +22,9 @@ TASKS=$(ps -e --no-headers | wc -l)
 # Get top 5 high resource-consuming processes
 TOP_PROCESSES=$(ps -eo pid,comm,%mem,%cpu --sort=-%cpu | head -n 6 | awk 'NR>1 {printf "*PID:* %s *Name:* %s *MEM:* %s%% *CPU:* %s%%%s", $1, $2, $3, $4, "%0A"}')
 
+# Sanitize the top processes message to avoid Markdown issues
+TOP_PROCESSES=$(echo "$TOP_PROCESSES" | sed -E 's/([_`])//g')
+
 # Prepare the message with system metrics
 MESSAGE="📊 *System Metrics Update:*%0A%0A"
 MESSAGE+="*Load Average:* $LOAD_AVG%0A"
@@ -54,6 +57,9 @@ fi
 
 # Include top 5 processes in the message
 MESSAGE+="%0A*Top 5 Processes:*%0A$TOP_PROCESSES"
+
+# Sanitize the final message to avoid Markdown parsing issues
+MESSAGE=$(echo "$MESSAGE" | sed -E 's/([_`])//g')
 
 # Send the message only if at least one metric exceeds the threshold
 if [[ $ALERT_FLAG -eq 1 ]]; then
