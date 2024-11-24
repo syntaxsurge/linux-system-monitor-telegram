@@ -86,7 +86,7 @@ This repository contains Bash scripts to monitor Linux system metrics (like CPU 
      ```
    - Example cron entry to run every minute:
      ```
-     * * * * * /path/to/monitor_overload.sh >/dev/null 2>&1
+     * * * * * /root/monitor_overload.sh >/dev/null 2>&1
      ```
 
 ## Example Output
@@ -143,6 +143,83 @@ This repository contains Bash scripts to monitor Linux system metrics (like CPU 
 *PID:* 44556 *Name:* python *MEM:* 5.2% *CPU:* 20.5%
 *PID:* 77889 *Name:* nginx *MEM:* 3.5% *CPU:* 15.0%
 ```
+
+## Troubleshooting
+
+### Missing `mpstat` or `sar` Command
+
+If you encounter errors like:
+
+```
+./send_load_to_telegram.sh: line 9: mpstat: command not found
+./send_load_to_telegram.sh: line 30: sar: command not found
+```
+
+It means the `mpstat` and `sar` utilities are not installed on your system. These are part of the `sysstat` package.
+
+#### Solution
+
+To install the `sysstat` package, use the following commands based on your Linux distribution:
+
+- **On CentOS, RHEL, or Fedora:**
+
+  ```bash
+  sudo yum install sysstat -y
+  ```
+
+- **On Debian, Ubuntu, or other Debian-based distributions:**
+
+  ```bash
+  sudo apt update
+  sudo apt install sysstat -y
+  ```
+
+- **On Arch Linux or Manjaro:**
+
+  ```bash
+  sudo pacman -S sysstat
+  ```
+
+Once installed, the `mpstat` and `sar` commands should be available, and the script should work without errors.
+
+---
+
+### Missing `bc` Command
+
+If you encounter errors like:
+
+```
+./monitor_overload.sh: line 74: bc: command not found
+./monitor_overload.sh: line 80: bc: command not found
+./monitor_overload.sh: line 86: bc: command not found
+```
+
+It means the `bc` utility, which is used for performing floating-point arithmetic, is not installed on your system.
+
+#### Solution
+
+To install `bc`, use the following commands based on your Linux distribution:
+
+- **On CentOS, RHEL, or Fedora:**
+
+  ```bash
+  sudo yum install bc -y
+  ```
+
+- **On Debian, Ubuntu, or other Debian-based distributions:**
+
+  ```bash
+  sudo apt update
+  sudo apt install bc -y
+  ```
+
+- **On Arch Linux or Manjaro:**
+
+  ```bash
+  sudo pacman -S bc
+  ```
+
+Once installed, the `bc` command should be available, and the script should work without errors.
 
 ## Contributing
 
