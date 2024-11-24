@@ -1,6 +1,6 @@
 # Linux System Monitor with Telegram Alerts
 
-This repository contains Bash scripts to monitor Linux system metrics (like CPU usage, memory usage, load averages, etc.) and send updates or alerts to a Telegram chat via a bot.
+This repository contains Bash scripts to monitor Linux system metrics (like CPU usage, memory usage, disk usage, etc.) and send updates or alerts to a Telegram chat via a bot.
 
 ## Features
 
@@ -9,12 +9,23 @@ This repository contains Bash scripts to monitor Linux system metrics (like CPU 
   - CPU Usage (including total CPUs)
   - Memory Usage
   - Swap Usage
+  - Disk Usage (with type: HDD, SSD, or SSD NVMe)
   - Uptime
   - Running Tasks
+  - IP Address of the system
+- **Network Speed Monitoring**:
+  - RX/TX Speed (in kB/s and MB/s)
+  - Max Network Speed (in Mbps)
 - **Top Resource-Consuming Processes**:
   - Lists the top 5 processes consuming the most CPU and memory.
 - **Telegram Alerts**:
   - Sends a detailed update or alert to a specified Telegram chat using a bot.
+  - Alerts include metrics exceeding thresholds, such as:
+    - High Load Average
+    - High CPU Usage
+    - High Memory Usage
+    - High Disk Usage
+  - Highlights critical metrics with clear alert messages.
 
 ## Scripts
 
@@ -24,17 +35,20 @@ This repository contains Bash scripts to monitor Linux system metrics (like CPU 
   - Load Average: `4.0`
   - CPU Usage: `80%`
   - Memory Usage: `80%`
+  - Disk Usage: `80%`
 - **Alert Details**:
   - Includes metrics exceeding thresholds and top 5 processes.
+  - Disk usage alerts if usage exceeds the defined threshold.
+  - Provides alerts for Load Average, CPU Usage, Memory Usage, and Disk Usage.
 
 ### 2. `send_load_to_telegram.sh`
-- **Purpose**: Sends current system metrics and top 5 processes to Telegram without checking thresholds.
+- **Purpose**: Sends current system metrics, disk usage, network speed, and top 5 processes to Telegram without checking thresholds.
 
 ## Requirements
 
 - A Telegram bot and chat ID.
 - Utilities used:
-  - `awk`, `curl`, `free`, `mpstat`, `ps`, `uptime`, `sed`
+  - `awk`, `curl`, `free`, `mpstat`, `ps`, `uptime`, `df`, `lsblk`, `sed`, `sar`, `ethtool`, `hostname`
 
 ## Setup Instructions
 
@@ -79,37 +93,48 @@ This repository contains Bash scripts to monitor Linux system metrics (like CPU 
 
 ### System Update:
 ```
-📊 System Metrics Update:
+📊 *System Load Update:*
 
-*Load Average:* 0.39 0.55 0.65
-*CPU Usage:* 10.05% (active, Total CPUs: 8)
-*Memory Usage:* 4.2Gi / 30Gi (13.70%)
-*Swap Usage:* 2.0Mi / 4.0Gi
-*Uptime:* 58 minutes
+*IP Address:* 192.168.1.1
+*Load Average:* 0.48 0.55 0.55
+*CPU Usage:* 7.47% (active, Total CPUs: 8)
+*Memory Usage:* 6.2Gi / 30Gi (19.93%)
+*Swap Usage:* 116Mi / 4.0Gi (2.84%)
+*Disk Usage:* 138G / 911G (16% used)
+*Disk Type:* SSD (NVMe)
+*Uptime:* 1 day, 16 hours, 38 minutes
 *Tasks:* 209
+*Network Speed:* RX: 469.25 kB/s, TX: 26769.74 kB/s
+*Max Network Speed:* 1000Mb/s
 
 *Top 5 Processes:*
-*PID:* 60949 *Name:* systemd-journal *MEM:* 0.2% *CPU:* 28.4%
-*PID:* 1214 *Name:* nginx *MEM:* 6.9% *CPU:* 10.0%
-*PID:* 1711 *Name:* rsyslogd *MEM:* 0.0% *CPU:* 5.8%
-*PID:* 79312 *Name:* kworker/5:0-eve *MEM:* 0.0% *CPU:* 1.8%
-*PID:* 78745 *Name:* kworker/4:2-eve *MEM:* 0.0% *CPU:* 1.6%
+*PID:* 60949 *Name:* systemd-journal *MEM:* 0.3% *CPU:* 29.0%
+*PID:* 1214 *Name:* nginx *MEM:* 13.6% *CPU:* 7.3%
+*PID:* 1711 *Name:* rsyslogd *MEM:* 0.1% *CPU:* 6.3%
+*PID:* 280653 *Name:* kworker/5:0-eve *MEM:* 0.0% *CPU:* 1.2%
+*PID:* 280032 *Name:* kworker/6:2-eve *MEM:* 0.0% *CPU:* 1.0%
 ```
 
 ### Alert Example:
 ```
-📊 System Metrics Update:
+📊 *System Load Update:*
 
+*IP Address:* 192.168.1.1
 *Load Average:* 4.50 3.80 2.90
 *CPU Usage:* 85.00% (active, Total CPUs: 8)
 *Memory Usage:* 25.5Gi / 30Gi (85.00%)
-*Swap Usage:* 2.0Gi / 4.0Gi
+*Swap Usage:* 3.5Gi / 4.0Gi (87.50%)
+*Disk Usage:* 200Gi / 256Gi (85% used)
+*Disk Type:* SSD
 *Uptime:* 2 hours, 30 minutes
 *Tasks:* 315
+*Network Speed:* RX: 150.75 kB/s, TX: 120.30 kB/s
+*Max Network Speed:* 1000 Mbps
 
-🚨 *Alert:* Load Average exceeds threshold (4.0).
-🚨 *Alert:* CPU Usage exceeds threshold (80%).
-🚨 *Alert:* Memory Usage exceeds threshold (80%).
+🚨 *Alert:* *Load Average* exceeds threshold (4.0).
+🚨 *Alert:* *CPU Usage* exceeds threshold (80%).
+🚨 *Alert:* *Memory Usage* exceeds threshold (80%).
+🚨 *Alert:* *Disk Usage* exceeds threshold (80%).
 
 *Top 5 Processes:*
 *PID:* 12345 *Name:* java *MEM:* 15.5% *CPU:* 70.3%
